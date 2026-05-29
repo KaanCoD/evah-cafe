@@ -168,55 +168,242 @@ const TODAY_STR = new Date().toISOString().split("T")[0];
 const HOJE_FMT = new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"});
 const DIA_NOME = new Date().toLocaleDateString("pt-BR",{weekday:"long"});
 
+// dias da tarefa: omitir = todos os dias (1=seg, 2=ter, 3=qua, 4=qui, 5=sex, 6=sab, 0=dom)
 const BASE = {
   gestor_op:{label:"Gestor Operacional",nome:"Elyon",emoji:"🏪",tarefas:[
-    {id:"go1",texto:"Compras realizadas seguindo a Lista de Compras?"},
-    {id:"go2",texto:"Item fora da lista? Motivo registrado?"},
-    {id:"go3",texto:"Estoque verificado e organizado?"},
-    {id:"go4",texto:"Salão dentro do padrão no turno da tarde?"},
-    {id:"go5",texto:"Caixa alinhado com o Gestor Financeiro?"},
-    {id:"go6",texto:"Alguma ocorrência do dia registrada?"},
+    // ABERTURA - COMPRAS
+    {id:"go_a1",texto:"Consultar a Lista de Compras da Evah Café"},
+    {id:"go_a2",texto:"Conferir o estoque antes de sair (o que realmente falta)"},
+    {id:"go_a3",texto:"Executar as compras seguindo a lista"},
+    {id:"go_a4",texto:"Item fora da lista? Registrar o motivo"},
+    {id:"go_a5",texto:"Conferir nota fiscal de cada compra"},
+    // ABERTURA - CHEGADA NA LOJA
+    {id:"go_b1",texto:"Organizar o que foi comprado no estoque"},
+    {id:"go_b2",texto:"Conferir validade dos itens recebidos na compra"},
+    {id:"go_b3",texto:"Entregar NFs e comprovantes para a Jordana lançar"},
+    {id:"go_b4",texto:"Avisar a cozinha do que NÃO chegou"},
+    {id:"go_b5",texto:"Abrir o Saipos e fazer login"},
+    // DURANTE O DIA
+    {id:"go_d1",texto:"Registrar reclamações e elogios (se houve, anotar o que foi)"},
+    {id:"go_d2",texto:"Conferir se o estoque está organizado"},
+    {id:"go_d3",texto:"Conferência de insumos do salão (canudo, açúcar, papel, café, água da máquina, adoçante)"},
+    {id:"go_d4",texto:"Conferir se a escala do dia está cumprida"},
+    {id:"go_d5",texto:"Comunicar mudança de escala com antecedência"},
+    {id:"go_d6",texto:"Uniformes limpos, tênis limpos, unhas/cabelo ajustados"},
+    // FECHAMENTO
+    {id:"go_f1",texto:"Fazer o fechamento de caixa"},
+    {id:"go_f2",texto:"Anotar pendência ou ocorrência do dia"},
+    {id:"go_f3",texto:"Equipamentos desligados (luz salão, árvore, máquina de café, tomadas, microondas, gás)"},
+    {id:"go_f4",texto:"Conferir banheiro e torneiras (descarga 1x + desinfetante)"},
+    {id:"go_f5",texto:"Definir prioridades do dia seguinte"},
+    {id:"go_f6",texto:"Fechaduras fechadas e chave guardada"},
+    {id:"go_f7",texto:"Travar o caixa no sistema"},
+    // SEMANAIS
+    {id:"go_s_ter",texto:"📅 [Terça] Revisar escala da próxima semana", dias:[2]},
+    {id:"go_s_qua",texto:"📅 [Quarta] Fazer as compras", dias:[3]},
+    {id:"go_s_dom",texto:"📅 [Domingo] Fazer contagem do estoque", dias:[0]},
   ]},
   gestor_fin:{label:"Gestor Financeiro",nome:"Elias",emoji:"💰",tarefas:[
-    {id:"gf1",texto:"Lançamentos do Saipos conferidos?"},
-    {id:"gf2",texto:"Boletos do dia verificados e autorizados?"},
-    {id:"gf3",texto:"Caixa fechado com o Gestor Operacional?"},
-    {id:"gf4",texto:"Alguma despesa fora do padrão identificada?"},
-  ]},
-  producao:{label:"Produção e Padrão",nome:"Edismeia",emoji:"👩‍🍳",tarefas:[
-    {id:"pr1",texto:"POP de abertura da cozinha seguido?"},
-    {id:"pr2",texto:"Fichas Técnicas acessíveis para a equipe?"},
-    {id:"pr3",texto:"Validades e armazenamento verificados?"},
-    {id:"pr4",texto:"Algum preparo fora do padrão identificado e corrigido?"},
-    {id:"pr5",texto:"POP de fechamento cumprido?"},
+    // ABERTURA
+    {id:"gf_a1",texto:"Verificar o fechamento do caixa do dia anterior (Online)"},
+    {id:"gf_a2",texto:"Conferir se as impressoras estão funcionando (Online)"},
+    {id:"gf_a3",texto:"Conferir pagamentos pendentes do dia anterior"},
+    // DURANTE - FINANCEIRO
+    {id:"gf_d1",texto:"Conferir NFs e boletos lançados pela Jordana no Saipos"},
+    {id:"gf_d2",texto:"Autorizar pagamentos do dia (nenhum boleto sai sem passar por mim)"},
+    {id:"gf_d3",texto:"Acompanhar fluxo de caixa diário"},
+    {id:"gf_d4",texto:"Separar reservas do dia: aluguel, salários, caixa operacional"},
+    // DURANTE - MARKETING
+    {id:"gf_m1",texto:"Olhar métricas do dia (tráfego pago, conversões)"},
+    {id:"gf_m2",texto:"Conferir se campanhas estão rodando sem erro"},
+    {id:"gf_m3",texto:"Ajustar verba se algo está fora da curva"},
+    // FECHAMENTO
+    {id:"gf_f1",texto:"Conferir se todos os pagamentos foram quitados"},
+    // SEMANAIS
+    {id:"gf_s_seg",texto:"📅 [Segunda] Decidir realocação de verba de tráfego", dias:[1]},
+    {id:"gf_s_ter",texto:"📅 [Terça] Revisar fluxo de caixa da semana", dias:[2]},
+    {id:"gf_s_dom1",texto:"📅 [Domingo] Conferir contas a pagar da semana seguinte", dias:[0]},
+    {id:"gf_s_dom2",texto:"📅 [Domingo] Analisar e apresentar performance de marketing", dias:[0]},
+    {id:"gf_s_dom3",texto:"📅 [Domingo] Alinhar com Jordana pendências de NF/boleto", dias:[0]},
   ]},
   admin:{label:"Administrativo e Marketing",nome:"Jordana",emoji:"📊",tarefas:[
-    {id:"ad1",texto:"Notas fiscais do dia lançadas no Saipos?"},
-    {id:"ad2",texto:"Boletos organizados e encaminhados ao Gestor Financeiro?"},
-    {id:"ad3",texto:"Conteúdo do dia publicado nas redes?"},
-    {id:"ad4",texto:"Pendência administrativa registrada?"},
+    // ABERTURA
+    {id:"ad_a1",texto:"Conferir e-mails, WhatsApp e canais de contato"},
+    {id:"ad_a2",texto:"Ver se chegou NF, boleto ou documento novo"},
+    {id:"ad_a3",texto:"Ver mensagens da contabilidade"},
+    {id:"ad_a4",texto:"Ver se tem candidato esperando retorno"},
+    {id:"ad_a5",texto:"Listar prioridades do dia"},
+    // DURANTE - NFS E BOLETOS
+    {id:"ad_n1",texto:"Conferir NFs recebidas do dia anterior"},
+    {id:"ad_n2",texto:"Lançar as NFs no Saipos"},
+    {id:"ad_n3",texto:"Agendar pagamento de boletos"},
+    {id:"ad_n4",texto:"Conferir dados do boleto (valor, fornecedor, vencimento, NF)"},
+    {id:"ad_n5",texto:"Salvar PDF na pasta certa com nome padronizado"},
+    {id:"ad_n6",texto:"Registrar no controle (fornecedor / valor / vencimento / status)"},
+    {id:"ad_n7",texto:"Encaminhar pro Elias autorizar pagamento"},
+    {id:"ad_n8",texto:"Atualizar status depois (pago / pendente / problema)"},
+    {id:"ad_n9",texto:"Arquivar comprovantes na pasta correta"},
+    {id:"ad_n10",texto:"Conferir se tem documento faltando para contabilidade"},
+    // DURANTE - MARKETING
+    {id:"ad_m1",texto:"Conferir agenda de publicações do dia"},
+    {id:"ad_m2",texto:"Criar e/ou publicar conteúdo nas redes"},
+    {id:"ad_m3",texto:"Responder comentários, DMs e marcações"},
+    {id:"ad_m4",texto:"Olhar menções e stories da Evah"},
+    {id:"ad_m5",texto:"Atualizar calendário editorial"},
+    // DURANTE - PESSOAS
+    {id:"ad_p1",texto:"Responder mensagens de candidatos"},
+    {id:"ad_p2",texto:"Organizar currículos recebidos por área"},
+    {id:"ad_p3",texto:"Conferir documentação de admissão"},
+    {id:"ad_p4",texto:"Registrar inconsistências ou pendências"},
+    {id:"ad_p5",texto:"Coletar info de uniforme e calçado dos novos"},
+    // FECHAMENTO
+    {id:"ad_f1",texto:"Conferir se todas as NFs do dia foram lançadas"},
+    {id:"ad_f2",texto:"Conferir se boletos foram organizados e encaminhados"},
+    {id:"ad_f3",texto:"Atualizar status dos pagamentos"},
+    {id:"ad_f4",texto:"Não deixar candidato sem retorno virando o dia"},
+    // SEMANAIS
+    {id:"ad_s_ter",texto:"📅 [Terça] Organizar pastas físicas e digitais", dias:[2]},
+    {id:"ad_s_dom1",texto:"📅 [Domingo] Conferir boletos da semana seguinte", dias:[0]},
+    {id:"ad_s_dom2",texto:"📅 [Domingo] Ver pendências da contabilidade", dias:[0]},
+    {id:"ad_s_dom3",texto:"📅 [Domingo] Revisar funil de candidatos", dias:[0]},
+    {id:"ad_s_dom4",texto:"📅 [Domingo] Planejar conteúdo da próxima semana", dias:[0]},
+  ]},
+  producao:{label:"Produção e Padrão",nome:"Edismeia",emoji:"👩‍🍳",tarefas:[
+    // ABERTURA - ESTRUTURA E HIGIENE
+    {id:"pr_a1",texto:"Conferir limpeza completa da cozinha"},
+    {id:"pr_a2",texto:"Higienizar bancadas"},
+    {id:"pr_a3",texto:"Higienizar e conferir utensílios limpos e organizados"},
+    {id:"pr_a4",texto:"Mise en place"},
+    {id:"pr_a5",texto:"Verificar validade dos insumos abertos"},
+    {id:"pr_a6",texto:"Conferir temperatura de geladeira / freezer"},
+    {id:"pr_a7",texto:"Garantir uso correto de touca, avental e higiene da equipe"},
+    // INSUMOS E ORGANIZAÇÃO
+    {id:"pr_i1",texto:"Preencher quadro de produção"},
+    {id:"pr_i2",texto:"Separar ingredientes das produções-base (Mise en place)"},
+    {id:"pr_i3",texto:"Validar etiquetagem (data de produção / validade)"},
+    // POPs
+    {id:"pr_p1",texto:"POP de higiene do ambiente seguido"},
+    {id:"pr_p2",texto:"POP de uniformes seguido"},
+    {id:"pr_p3",texto:"POP de limpeza da cozinha seguido"},
+    // AVALIAÇÃO
+    {id:"pr_v1",texto:"Registrar erros do dia"},
+    {id:"pr_v2",texto:"Identificar gargalos de produção"},
+    {id:"pr_v3",texto:"Reportar sugestões de melhorias"},
+    // FECHAMENTO
+    {id:"pr_f1",texto:"Conferir descarte correto"},
+    {id:"pr_f2",texto:"Organizar mise en place do próximo turno"},
+    {id:"pr_f3",texto:"Atualizar controle de estoque"},
+    {id:"pr_f4",texto:"Registrar faltas de insumos"},
+    {id:"pr_f5",texto:"Garantir cozinha limpa e pronta"},
+    // PERGUNTA FINAL
+    {id:"pr_q1",texto:"🤔 \"Se eu não estivesse aqui hoje, a Evah manteria exatamente o mesmo padrão?\""},
   ]},
   garcom:{label:"Garçom",nome:"",emoji:"🍽️",tarefas:[
-    {id:"gc1",texto:"Conhece os itens e sugestões do dia?"},
-    {id:"gc2",texto:"Celular guardado durante o atendimento?"},
-    {id:"gc3",texto:"Pedidos transmitidos corretamente à produção?"},
-    {id:"gc4",texto:"Ocorrência ou insatisfação comunicada ao Gestor?"},
-    {id:"gc5",texto:"Salão organizado no fechamento?"},
+    // ABERTURA - MONTAGEM
+    {id:"gc_m1",texto:"Organizar as mesas nos lugares certos"},
+    {id:"gc_m2",texto:"Colocar duas mesas na área externa"},
+    {id:"gc_m3",texto:"Posicionar as cadeiras certas combinando com cada mesa"},
+    {id:"gc_m4",texto:"Conferir se mesas e cadeiras estão alinhadas"},
+    {id:"gc_m5",texto:"Conferir validade do que está em uso"},
+    // ABERTURA - LIMPEZA
+    {id:"gc_l1",texto:"Varrer o salão"},
+    {id:"gc_l2",texto:"Tirar a poeira (mesas, cadeiras, balcão, decoração)"},
+    {id:"gc_l3",texto:"Limpar chão na área externa também"},
+    {id:"gc_l4",texto:"Limpar vidros e portas"},
+    // ABERTURA - PREPARAÇÃO
+    {id:"gc_p1",texto:"Conferir cardápios (quantidade, limpeza, sem dobra)"},
+    {id:"gc_p2",texto:"Conferir reposição de água, talher, guardanapo"},
+    {id:"gc_p3",texto:"Alinhar com o Cumim a divisão de mesas"},
+    // FECHAMENTO
+    {id:"gc_f1",texto:"Conferir se todas as contas foram fechadas"},
+    {id:"gc_f2",texto:"Limpar e organizar as mesas"},
+    {id:"gc_f3",texto:"Recolher, organizar e limpar cardápios"},
+    {id:"gc_f4",texto:"Repor água, talher, guardanapo pro próximo dia"},
+    {id:"gc_f5",texto:"Recolher as mesas da área externa"},
+    {id:"gc_f6",texto:"Houve problemas ou elogios? (Se sim, registrar)"},
   ]},
   cumim:{label:"Cumim",nome:"",emoji:"🥄",tarefas:[
-    {id:"cu1",texto:"Mesas preparadas antes de abrir?"},
-    {id:"cu2",texto:"Itens de serviço repostos (água, talheres, guardanapos)?"},
-    {id:"cu3",texto:"Salão limpo durante e após o serviço?"},
-    {id:"cu4",texto:"Ocorrência comunicada ao Garçom ou Gestor?"},
+    // ABERTURA - LOUÇA
+    {id:"cu_a1",texto:"Conferir se tem louça limpa e SECA pra começar o dia"},
+    {id:"cu_a2",texto:"Secar o que ficou do dia anterior se precisar"},
+    {id:"cu_a3",texto:"Guardar e organizar talheres, passar guardanapo e pôr na sacola de papel"},
+    // ABERTURA - REPOSIÇÃO
+    {id:"cu_r1",texto:"Repor açúcar nas mesas"},
+    {id:"cu_r2",texto:"Repor adoçante"},
+    {id:"cu_r3",texto:"Repor guardanapos"},
+    {id:"cu_r4",texto:"Repor colheres de café"},
+    {id:"cu_r5",texto:"Repor papel (banheiro, balcão)"},
+    {id:"cu_r6",texto:"Conferir xícara e pratinho no balcão"},
+    {id:"cu_r7",texto:"Conferir copos e talheres"},
+    // DURANTE - MESAS
+    {id:"cu_d1",texto:"Recolher louça das pessoas que terminaram"},
+    {id:"cu_d2",texto:"Limpar a mesa assim que liberar"},
+    {id:"cu_d3",texto:"Reorganizar pra próxima pessoa"},
+    {id:"cu_d4",texto:"Avisar o Garçom que a mesa está pronta"},
+    // DURANTE - LOUÇA
+    {id:"cu_d5",texto:"Lavar a louça que vai chegando (não acumular)"},
+    {id:"cu_d6",texto:"SECAR TUDO antes de guardar"},
+    // DURANTE - REPOSIÇÃO CONTÍNUA
+    {id:"cu_d7",texto:"Conferir mesas — açúcar, guardanapo, colher"},
+    {id:"cu_d8",texto:"Repor papel no banheiro e balcão"},
+    // FECHAMENTO
+    {id:"cu_f1",texto:"Lavar TODA a louça que ficou"},
+    {id:"cu_f2",texto:"Secar tudo, nada vai pra prateleira molhado"},
+    {id:"cu_f3",texto:"Guardar nos lugares certos"},
+    {id:"cu_f4",texto:"Repor xícara, prato e talher conforme uso"},
+    {id:"cu_f5",texto:"Houve problemas ou elogios? (Se sim, registrar)"},
   ]},
   ajudante:{label:"Ajudante de Cozinha",nome:"",emoji:"🍳",tarefas:[
-    {id:"aj1",texto:"Uniforme e EPIs completos?"},
-    {id:"aj2",texto:"Mise en place conforme POP?"},
-    {id:"aj3",texto:"Validades e armazenamento verificados?"},
-    {id:"aj4",texto:"Falta ou não conformidade comunicada ao responsável?"},
-    {id:"aj5",texto:"POP de fechamento cumprido?"},
+    // ABERTURA
+    {id:"aj_a1",texto:"Conferir bancada limpa e organizada"},
+    {id:"aj_a2",texto:"Conferir equipamentos funcionando"},
+    {id:"aj_a3",texto:"Higienizar e organizar utensílios (faca, tábua, vasilha, geladeira)"},
+    // DURANTE - APOIO BÁSICO
+    {id:"aj_d1",texto:"Repor insumos na bancada conforme uso"},
+    {id:"aj_d2",texto:"Pré-preparar insumos para o dia"},
+    {id:"aj_d3",texto:"Manter mise en place"},
+    // DURANTE - SUCOS
+    {id:"aj_s1",texto:"Preparar sucos do pedido"},
+    {id:"aj_s2",texto:"Manter padrão (fruta, proporção, gelo)"},
+    {id:"aj_s3",texto:"Repor frutas higienizadas conforme acaba"},
+    {id:"aj_s4",texto:"Limpar liquidificador entre usos"},
+    // DURANTE - ORGANIZAÇÃO
+    {id:"aj_o1",texto:"Manter a bancada limpa durante o serviço"},
+    {id:"aj_o2",texto:"Lavar utensílio sujo conforme uso (não acumular)"},
+    {id:"aj_o3",texto:"Trocar pano de prato quando precisar"},
+    {id:"aj_o4",texto:"Recolher lixo conforme enche"},
+    // DURANTE - INSUMOS
+    {id:"aj_i1",texto:"Conferir validade antes de abrir embalagem nova"},
+    {id:"aj_i2",texto:"Acondicionar corretamente o que abrir (data, recipiente)"},
+    {id:"aj_i3",texto:"Avisar se algum insumo está acabando"},
+    {id:"aj_i4",texto:"Avisar qualquer não conformidade"},
+    // FECHAMENTO - COZINHA
+    {id:"aj_f1",texto:"Guardar insumos corretamente (recipiente, etiqueta, data)"},
+    {id:"aj_f2",texto:"Acondicionar perecíveis na temperatura certa"},
+    {id:"aj_f3",texto:"Conferir validade do que sobrou"},
+    {id:"aj_f4",texto:"Descartar o que precisa ser descartado"},
+    // FECHAMENTO - LIMPEZA PROFUNDA
+    {id:"aj_l1",texto:"Limpar bancada"},
+    {id:"aj_l2",texto:"Limpar fogão, forno, chapa"},
+    {id:"aj_l3",texto:"Limpar liquidificador e equipamentos usados"},
+    {id:"aj_l4",texto:"Limpar geladeira por fora"},
+    {id:"aj_l5",texto:"Lavar utensílios que ficaram"},
+    {id:"aj_l6",texto:"Trocar panos sujos"},
+    // FECHAMENTO - CONFERÊNCIA FINAL
+    {id:"aj_c1",texto:"Consultar POP de fechamento"},
+    {id:"aj_c2",texto:"Conferir se a cozinha está pronta pro próximo dia"},
+    {id:"aj_c3",texto:"Avisar o responsável que terminou"},
   ]},
-  hospitalidade:{label:"Hospitalidade",nome:"Edimar",emoji:"🤝",tarefas:[]},
+  hospitalidade:{label:"Hospitalidade",nome:"Edimar",emoji:"🤝",tarefas:[
+    // PRESENÇA NO SALÃO
+    {id:"ho_p1",texto:"Houve problemas ou elogios? (Se sim, quais?)"},
+    // APOIO OPERACIONAL
+    {id:"ho_a1",texto:"Sugestão de melhorias registrada"},
+    {id:"ho_a2",texto:"Levar pedido simples ao cliente quando necessário"},
+    {id:"ho_a3",texto:"Informar à equipe qualquer necessidade percebida"},
+    {id:"ho_a4",texto:"Comunicar ao Gestor Operacional observações importantes"},
+    {id:"ho_a5",texto:"Seguir os POPs da Evah Café durante sua atuação"},
+  ]},
 };
 
 // STATE
@@ -266,9 +453,26 @@ function saveShared() {
   }
 }
 
+// Procura uma tarefa pelo ID em todos os cargos do BASE (retorna a tarefa ou null)
+function findBaseTask(id) {
+  for (const ck in BASE) {
+    const t = BASE[ck].tarefas.find(x => x.id === id);
+    if (t) return t;
+  }
+  return null;
+}
+
 function getTaskDias(id) {
+  // 1. Override do usuário (vem do Firebase via state.dias) tem prioridade
   const d = state.dias[id];
-  return (!d || d.length === 0 || d.length === 7) ? [0,1,2,3,4,5,6] : d;
+  if (d && d.length > 0 && d.length < 7) return d;
+  // 2. Se a tarefa do BASE define dias específicos (ex: "Terça"), usa isso
+  const baseTask = findBaseTask(id);
+  if (baseTask && baseTask.dias && baseTask.dias.length > 0 && baseTask.dias.length < 7) {
+    return baseTask.dias;
+  }
+  // 3. Padrão: todos os dias
+  return [0,1,2,3,4,5,6];
 }
 
 function isToday(id) { return getTaskDias(id).includes(TODAY_DOW); }
@@ -286,10 +490,6 @@ function getAllTasks(ck) {
 }
 
 function getProgress(ck) {
-  if (ck === "hospitalidade") {
-    const ok = (state.obs[ck]||"").trim();
-    return {done: ok?1:0, total:1, pct: ok?100:0};
-  }
   const tasks = getTodayTasks(ck);
   const done = tasks.filter(t => state.checks[t.id]).length;
   return {done, total:tasks.length, pct: tasks.length ? Math.round(done/tasks.length*100) : 0};
@@ -301,19 +501,15 @@ function gerarMsg() {
   const c = BASE[ck];
   const nm = state.nome || c.label;
   let m = "☕ *EVAH CAFÉ — Checklist*\n📅 " + HOJE_FMT.charAt(0).toUpperCase()+HOJE_FMT.slice(1) + "\n👤 *"+nm+"* | "+c.label+"\n\n";
-  if(ck === "hospitalidade") {
-    m += "🤝 *Observação de Hospitalidade:*\n" + ((state.obs[ck]||"").trim()||"_(nenhuma observação)_") + "\n";
-  } else {
-    const tasks = getTodayTasks(ck);
-    const prog = getProgress(ck);
-    tasks.forEach(t => { m += (state.checks[t.id]?"✅":"❌") + " " + t.texto + "\n"; });
-    m += "\n📊 *"+prog.done+"/"+prog.total+" concluídas ("+prog.pct+"%)*\n";
-    const pend = tasks.filter(t => !state.checks[t.id]);
-    if(pend.length) { m += "\n⚠️ *Pendências:*\n"; pend.forEach(t => { m += "• "+t.texto+"\n"; }); }
-    else m += "\n✅ *Tudo concluído!*\n";
-    const ocorr = (state.obs[ck]||"").trim();
-    if(ocorr) m += "\n📝 *Ocorrência:*\n"+ocorr+"\n";
-  }
+  const tasks = getTodayTasks(ck);
+  const prog = getProgress(ck);
+  tasks.forEach(t => { m += (state.checks[t.id]?"✅":"❌") + " " + t.texto + "\n"; });
+  m += "\n📊 *"+prog.done+"/"+prog.total+" concluídas ("+prog.pct+"%)*\n";
+  const pend = tasks.filter(t => !state.checks[t.id]);
+  if(pend.length) { m += "\n⚠️ *Pendências:*\n"; pend.forEach(t => { m += "• "+t.texto+"\n"; }); }
+  else m += "\n✅ *Tudo concluído!*\n";
+  const ocorr = (state.obs[ck]||"").trim();
+  if(ocorr) m += "\n📝 *Ocorrência:*\n"+ocorr+"\n";
   m += "\n_Evah Café App_";
   return m;
 }
@@ -356,33 +552,24 @@ function render() {
 
   let bodyHtml = '<div class="dia-badge">📅 '+DIA_NOME+'</div>';
 
-  if(ck === "hospitalidade") {
-    bodyHtml += '<div class="obs-card" style="margin-top:0">'
-      +'<div class="obs-ttl">🤝 Observação do dia</div>'
-      +'<div class="obs-sub">Registre observações sobre clientes ou salão para o Elias compilar na reunião.</div>'
-      +'<textarea class="obs-ta" style="min-height:130px" placeholder="Ex: Mesa 4 elogiou o atendimento..." oninput="setObs(this.value)">'+escHtml(cargoObs)+'</textarea>'
-      +(cargoObs.trim()?'<div class="obs-foot"><span class="obs-ok">✅ Registrado</span><button class="obs-clr" onclick="setObs(\'\')">Limpar</button></div>':'')
-      +'</div>';
-  } else {
-    if(todayTasks.length === 0) {
-      bodyHtml += '<div class="empty-day">Nenhuma tarefa para '+DIA_NOME+'.<br>Use ✏️ Editar para configurar os dias de cada atividade.</div>';
-    }
-    todayTasks.forEach(t => {
-      const ck2 = state.checks[t.id];
-      bodyHtml += '<div class="ti'+(ck2?' ck':'')+'" onclick="toggleCheck(\''+t.id+'\')">'
-        +'<div class="circ"><span class="tick">✓</span></div>'
-        +'<span class="tt">'+escHtml(t.texto)+'</span>'
-        +'</div>';
-    });
-    bodyHtml += '<div class="obs-card">'
-      +'<div class="obs-ttl">📝 Ocorrência do dia</div>'
-      +'<div class="obs-sub">Algo que merece atenção na reunião semanal?</div>'
-      +'<textarea class="obs-ta" placeholder="Ex: Equipamento com problema, feedback de cliente..." oninput="setObs(this.value)">'+escHtml(cargoObs)+'</textarea>'
-      +(cargoObs.trim()?'<div class="obs-foot"><span class="obs-ok">✅ Registrado</span><button class="obs-clr" onclick="setObs(\'\')">Limpar</button></div>':'')
-      +'</div>';
+  if(todayTasks.length === 0) {
+    bodyHtml += '<div class="empty-day">Nenhuma tarefa para '+DIA_NOME+'.<br>Use ✏️ Editar para configurar os dias de cada atividade.</div>';
   }
+  todayTasks.forEach(t => {
+    const ck2 = state.checks[t.id];
+    bodyHtml += '<div class="ti'+(ck2?' ck':'')+'" onclick="toggleCheck(\''+t.id+'\')">'
+      +'<div class="circ"><span class="tick">✓</span></div>'
+      +'<span class="tt">'+escHtml(t.texto)+'</span>'
+      +'</div>';
+  });
+  bodyHtml += '<div class="obs-card">'
+    +'<div class="obs-ttl">📝 Ocorrência do dia</div>'
+    +'<div class="obs-sub">Algo que merece atenção na reunião semanal?</div>'
+    +'<textarea class="obs-ta" placeholder="Ex: Equipamento com problema, feedback de cliente..." oninput="setObs(this.value)">'+escHtml(cargoObs)+'</textarea>'
+    +(cargoObs.trim()?'<div class="obs-foot"><span class="obs-ok">✅ Registrado</span><button class="obs-clr" onclick="setObs(\'\')">Limpar</button></div>':'')
+    +'</div>';
 
-  const editBtn = ck !== "hospitalidade" ? '<button class="btn-ed" onclick="openEdit()">✏️ Editar</button>' : '';
+  const editBtn = '<button class="btn-ed" onclick="openEdit()">✏️ Editar</button>';
 
   app.innerHTML =
     '<div class="hdr"><div class="hdr-row">'
