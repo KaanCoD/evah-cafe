@@ -2,7 +2,7 @@
 // Estratégia: cache-first pros assets do app, network-first pras fontes externas
 // Bump CACHE_VERSION quando atualizar o app pra forçar refresh nos celulares
 
-const CACHE_VERSION = 'evah-v3';
+const CACHE_VERSION = 'evah-v4';
 const APP_SHELL = [
   './',
   './index.html',
