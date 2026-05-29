@@ -146,8 +146,15 @@ onValue(sharedRef, (snap) => {
     try { localStorage.setItem("ec-dias", JSON.stringify(window.state.dias)); } catch{}
   }
   window.FB.ready = true;
-  if (typeof window.render === 'function' && window.state && window.state.screen === 'checklist') {
+  console.log('[Firebase] dados atualizados, re-renderizando');
+  // Re-renderiza sempre que os dados mudam
+  if (typeof window.render === 'function' && window.state) {
+    // Detecta se o painel de edição está aberto e reabre pra atualizar a lista
+    const editOpen = document.getElementById('editOv')?.classList.contains('show');
     window.render();
+    if (editOpen && typeof window.openEdit === 'function') {
+      window.openEdit();
+    }
   }
 });
 </script>
@@ -597,6 +604,7 @@ function copiar() {
 
 // INIT
 window.render = render;
+window.openEdit = openEdit;
 load();
 render();
 </script>
